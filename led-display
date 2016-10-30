@@ -1,0 +1,162 @@
+#include <Wire.h>
+#include "SPI.h"
+#include "Adafruit_WS2801.h"
+
+//Don't worry about this part
+int dataPin  = 10;    // Yellow wire on Adafruit Pixels
+int clockPin = 9;    // Green wire on Adafruit Pixels
+const int cPin = 11;
+const int dPin = 6;
+
+// I only have 25 LEDs so my strip can only instantiate with 25
+Adafruit_WS2801 strip = Adafruit_WS2801(25,dataPin,clockPin);
+
+int start = 0;
+
+int prevX = 0;
+int currentX = 0;
+
+int cState = 0;
+int dState = 0;
+
+
+void setup() 
+{
+  Serial.begin(9600);
+
+  // Start up the LED strip
+  strip.begin();
+  // Update the strip, to start they are all 'off'
+  strip.show();
+  // Try to initialise
+
+  pinMode(cPin, INPUT); 
+  pinMode(dPin, INPUT);
+}
+
+void loop() 
+{
+  displayFlash();
+  displayRun();
+  displayFlash();;
+  displayBehindYou();
+  displayFlash();
+  displayKodeThree();
+  displayFlash();
+  displayRedrum();
+  displayFlash();
+ 
+}
+void displayFlash(){
+  rainbow(1000);
+  hideAll(1000);
+  rainbow(500);
+  hideAll(500);
+}
+
+void displayRedrum()
+{
+  displayLetter(7);
+  displayLetter(20);
+  displayLetter(21);
+  displayLetter(7);
+  displayLetter(4);
+  displayLetter(12);
+}
+
+void displayRun(){
+  displayLetter(7);
+  displayLetter(4);
+  displayLetter(13);
+}
+
+void displayKodeThree(){
+  displayLetter(10);
+  displayLetter(14);
+  displayLetter(21);
+  displayLetter(20);
+  
+  displayLetter(5);
+  displayLetter(17);
+  displayLetter(7);
+  displayLetter(20);
+  displayLetter(20);
+
+}
+
+void displayBehindYou(){
+  displayLetter(23);
+  displayLetter(20);
+  displayLetter(17);
+  displayLetter(8);
+  displayLetter(13);
+  displayLetter(21);
+ 
+  displayLetter(0);
+  displayLetter(14);
+  displayLetter(4);
+}
+
+void rainbow(int wait) {
+  int i;
+  // this loop expression is really ugly because my "A" is in position 24 & my "Y" is in position 0
+  // and I want them to light up one by one starting with "A"
+  for (i=strip.numPixels(); i > -1 ; i--) {
+    uint32_t c;
+    c = randColor();
+    strip.setPixelColor(i, c);
+    strip.show();   // write all the pixels out
+  } 
+  delay(wait);
+}
+
+/* Helper functions */
+
+// display an individual pixel in a "random" color
+// I have 25 pixels with pixel positions
+void displayLetter(byte letterVal){
+  uint32_t c;
+  c = randColor();
+  strip.setPixelColor(letterVal, c);
+  strip.show();
+  delay(300);
+  strip.setPixelColor(letterVal, 0);
+  strip.show();
+  delay(1000);
+}
+
+// creates a random color
+uint32_t randColor(){
+  byte r;
+  byte g;
+  byte b;
+  uint32_t c;
+  r = random(284);
+  g = random(284);
+  b = random(284);
+  c = Color(r,g,b);
+  return c; 
+}
+
+// Create a 24 bit color value from R,G,B
+uint32_t Color(byte r, byte g, byte b)
+{
+  uint32_t c;
+  c = r;
+  c <<= 8;
+  c |= g;
+  c <<= 8;
+  c |= b;
+  return c;
+}
+
+// sets all pixels to off
+void hideAll(int wait) {
+  int i;
+
+  for (i=0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, Color(0,0,0));
+  }  
+  strip.show();   // write all the pixels out
+  delay(wait);
+}
