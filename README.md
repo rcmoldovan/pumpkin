@@ -1,5 +1,5 @@
 # pumpkin
-Stranger Things pumpkin theme adapted from Kylie Stradley's Halloween Costume.
+Stranger Things pumpkin theme adapted from Kylie Stradley's Halloween Costume. Created with Adafruit Flora and LED Pixel lights. Written in Arduino.
 
 KodeThreeKrew, if you want to display something, just add it directly to master and Glip me so that I can push it through. Start on line 99 and Write the syntax like this:
 
